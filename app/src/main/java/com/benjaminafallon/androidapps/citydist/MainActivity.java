@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     Location mLastLocation;
     TextView textViewLong;
     TextView textViewLat;
+    ArrayList<City> list;
+    ArrayAdapter itemsAdapter;
 
 
     @Override
@@ -39,13 +41,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         String[] values = new String[] { "New York", "Los Angeles", "Chicago" };
 
-        final ArrayList<City> list = new ArrayList<>();
+        list = new ArrayList<>();
         list.add(new City("New York", 0.0));
         list.add(new City("Los Angeles", 1.0));
         list.add(new City("Chicago", 2.0));
 
 
-        ArrayAdapter itemsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
+        itemsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
@@ -85,12 +87,38 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(Bundle bundle) {
+        double myLat = 0.0;
+        double myLong = 0.0;
+        float[] results = new float[1];
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
         if (mLastLocation != null) {
-            textViewLat.setText("Lat: " + String.valueOf(mLastLocation.getLatitude()));
-            textViewLong.setText("Long: " + String.valueOf(mLastLocation.getLongitude()));
+            myLat = mLastLocation.getLatitude();
+            myLong = mLastLocation.getLongitude();
+            textViewLat.setText("Lat: " + String.valueOf(myLat));
+            textViewLong.setText("Long: " + String.valueOf(myLong));
         }
+        //New York City
+        Location.distanceBetween(myLat, myLong, 40.7127, -74.0059, results);
+        double distanceNYC = results[0];
+        //Los Angeles
+        Location.distanceBetween(myLat, myLong, 34.0500, -118.2500, results);
+        double distanceLA = results[0];
+        //Chicago
+        Location.distanceBetween(myLat, myLong, 41.8369, -87.6847, results);
+        double distanceCHI = results[0];
+
+        //gives distance in miles
+        distanceNYC = distanceNYC / 1609.344;
+        distanceLA = distanceLA / 1609.344;
+        distanceCHI = distanceCHI / 1609.344;
+
+        list.get(0).setDistance(distanceNYC);
+        list.get(1).setDistance(distanceLA);
+        list.get(2).setDistance(distanceCHI);
+
+        itemsAdapter.notifyDataSetChanged();
+
     }
 
     @Override
