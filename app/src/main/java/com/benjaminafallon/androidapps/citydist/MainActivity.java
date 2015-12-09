@@ -22,11 +22,9 @@ public class MainActivity extends AppCompatActivity {
         String[] values = new String[] { "New York", "Los Angeles", "Chicago" };
 
         final ArrayList<City> list = new ArrayList<>();
-        for (int i = 0; i < values.length; ++i) {
-            list.add(new City("New York", 0.0));
-            list.add(new City("Los Angeles", 1.0));
-            list.add(new City("Chicago", 2.0));
-        }
+        list.add(new City("New York", 0.0));
+        list.add(new City("Los Angeles", 1.0));
+        list.add(new City("Chicago", 2.0));
 
 
         ArrayAdapter itemsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
