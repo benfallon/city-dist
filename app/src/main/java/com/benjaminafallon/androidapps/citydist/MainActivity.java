@@ -1,6 +1,8 @@
 package com.benjaminafallon.androidapps.citydist;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,7 +20,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
@@ -39,9 +44,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         textViewLong = (TextView) findViewById(R.id.textViewLong);
 
 
-        String[] values = new String[] { "New York", "Los Angeles", "Chicago" };
+        //String[] values = new String[] { "New York", "Los Angeles", "Chicago" };
 
         list = new ArrayList<>();
+
+        //US_CITIES = api request here
+
+        //for (int i = 0; i < US_CITIES.length(); i++) {
+
+        //}
+
+
         list.add(new City("New York", 0.0));
         list.add(new City("Los Angeles", 1.0));
         list.add(new City("Chicago", 2.0));
@@ -98,6 +111,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             textViewLat.setText("Lat: " + String.valueOf(myLat));
             textViewLong.setText("Long: " + String.valueOf(myLong));
         }
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(myLat, myLong, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String cityName = addresses.get(0).getAddressLine(0);
+        //String stateName = addresses.get(0).getAddressLine(1);
+        //String countryName = addresses.get(0).getAddressLine(2);
+
+        TextView placeTextView = (TextView) findViewById(R.id.placeTextView);
+        placeTextView.setText(cityName);
+
+
         //New York City
         Location.distanceBetween(myLat, myLong, 40.7127, -74.0059, results);
         double distanceNYC = results[0];
