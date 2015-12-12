@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     Location mLastLocation;
     TextView textViewLong;
     TextView textViewLat;
-    ArrayList<City> list;
+    ArrayList<City> top10Cities;
     ArrayAdapter itemsAdapter;
 
 
@@ -42,31 +42,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //String[] values = new String[] { "New York", "Los Angeles", "Chicago" };
+        top10Cities = new ArrayList<>();
 
-        list = new ArrayList<>();
+        top10Cities.add(new City("New York", 40.7127837, -74.00594130000002));
+        top10Cities.add(new City("Los Angeles", 34.0522342, -118.2436849));
+        top10Cities.add(new City("Chicago", 41.8781136, -87.62979819999998));
+        top10Cities.add(new City("Houston", 29.7604267, -95.3698028));
+        top10Cities.add(new City("Philadelphia", 39.9525839, -75.16522150000003));
+        top10Cities.add(new City("Phoenix", 33.4483771, -112.07403729999999));
+        top10Cities.add(new City("San Antonio", 29.4241219, -98.49362819999999));
+        top10Cities.add(new City("San Diego", 32.715738, -117.16108380000003));
+        top10Cities.add(new City("Dallas", 32.7766642, -96.79698789999998));
+        top10Cities.add(new City("San Jose", 37.3382082, -121.88632860000001));
 
-        //US_CITIES = api request here
-
-        //for (int i = 0; i < US_CITIES.length(); i++) {
-
-        //}
-
-
-        list.add(new City("New York", 0.0));
-        list.add(new City("Los Angeles", 1.0));
-        list.add(new City("Chicago", 2.0));
-
-
-        itemsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
+        itemsAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, top10Cities) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 
-                text1.setText(list.get(position).getName());
-                text2.setText(String.valueOf(list.get(position).getDistance()));
+                text1.setText(top10Cities.get(position).getName());
+                text2.setText(String.valueOf(top10Cities.get(position).getDistance()));
                 return view;
             }
         };
@@ -115,32 +112,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         String cityName = addresses.get(0).getAddressLine(0);
-        //String stateName = addresses.get(0).getAddressLine(1);
-        //String countryName = addresses.get(0).getAddressLine(2);
 
         TextView placeTextView = (TextView) findViewById(R.id.placeTextView);
         placeTextView.setText(cityName);
 
-
-        //New York City
-        Location.distanceBetween(myLat, myLong, 40.7127, -74.0059, results);
-        double distanceNYC = results[0];
-        //Los Angeles
-        Location.distanceBetween(myLat, myLong, 34.0500, -118.2500, results);
-        double distanceLA = results[0];
-        //Chicago
-        Location.distanceBetween(myLat, myLong, 41.8369, -87.6847, results);
-        double distanceCHI = results[0];
-
-        //gives distance in miles
-        distanceNYC = distanceNYC / 1609.344;
-        distanceLA = distanceLA / 1609.344;
-        distanceCHI = distanceCHI / 1609.344;
-
-        list.get(0).setDistance(distanceNYC);
-        list.get(1).setDistance(distanceLA);
-        list.get(2).setDistance(distanceCHI);
+        for (int i = 0; i < top10Cities.size(); i++) {
+           top10Cities.get(i).findAndSetDistance(myLat, myLong);
+        }
 
         itemsAdapter.notifyDataSetChanged();
 
