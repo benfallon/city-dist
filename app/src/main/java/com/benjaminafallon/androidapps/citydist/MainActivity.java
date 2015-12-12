@@ -40,10 +40,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textViewLat = (TextView) findViewById(R.id.textViewLat);
-        textViewLong = (TextView) findViewById(R.id.textViewLong);
-
-
         //String[] values = new String[] { "New York", "Los Angeles", "Chicago" };
 
         list = new ArrayList<>();
@@ -108,8 +104,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mLastLocation != null) {
             myLat = mLastLocation.getLatitude();
             myLong = mLastLocation.getLongitude();
-            textViewLat.setText("Lat: " + String.valueOf(myLat));
-            textViewLong.setText("Long: " + String.valueOf(myLong));
         }
 
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
